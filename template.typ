@@ -8,15 +8,8 @@
   // 2. GLOBAL SETTINGS
   set page(
     paper: "us-legal",
-    margin: (x: 0in, y: 0in),
-    footer: rect(width: 100%, fill: cyan, inset: (x: 0.5in, y: 8pt), stroke: none)[
-      #set align(center)
-      #set text(size: 8pt, fill: deepGreen, font: "Montserrat")
-      #grid(columns: (1fr, 1fr),
-        [Visit: #link(data.primer_footer.get_involved)],
-        [Resources: #link(data.primer_footer.fairsharing)]
-      )
-    ]
+    margin: (top: 0in, x: 0in, bottom: 0in), // Keep margins at zero
+    footer: none // <--- Tell Typst NOT to manage the footer automatically
   )
   
   set text(font: ("Montserrat", "Arial"), size: 8.5pt)
@@ -79,42 +72,47 @@
     )
   ]
 
-  v(-4pt) // Pull core message closer
-
-
-  v(-4pt) // Pull grid closer
+  v(-11pt) // Pull grid closer
 
   // 6. UNIFIED CONTENT GRID
   let grid-items = ()
 
-  // Row 0: Floating Header Boxes (3/4 width, inverted colors)
-  // Left Header: Deep Green box, Cyan text
-  grid-items.push(block(width: 100%, inset: (left: 0.5in, right: 15pt, y: 10pt))[
-    #rect(fill: deepGreen, width: 75%, inset: 8pt, radius: 2pt)[
-      #text(weight: 800, size: 11pt, fill: cyan)[#data.metadata.left_header]
+  // Row 0: The Floating Header Boxes (Pinned to the Top of the Columns)
+  
+  // LEFT HEADER (Row 0, Column 0)
+  grid-items.push(block(width: 100%, inset: (left: 2pt, right: 10pt, top: 2pt, bottom: 10pt))[
+    #set align(left) // <--- Pins the rectangle to the left
+    #rect(fill: deepGreen, width: 70%, inset: 8pt, radius: 2pt)[
+      #set align(left) // Keeps the text centered INSIDE the green box
+      #text(weight: 500, size: 14pt, fill: cyan)[#upper(data.metadata.left_header)]
     ]
   ])
-  // Right Header: Cyan box, Deep Green text
-  grid-items.push(block(width: 100%, inset: (left: 15pt, right: 0.5in, y: 10pt))[
-    #rect(fill: cyan, width: 75%, inset: 8pt, radius: 2pt)[
-      #text(weight: 800, size: 11pt, fill: deepGreen)[#data.metadata.right_header]
+
+  // RIGHT HEADER (Row 0, Column 1)
+  grid-items.push(block(width: 100%, inset: (left: 2pt, right: 0.5in, top: 2pt, bottom: 10pt))[
+    #set align(left) // <--- Pins the rectangle to the left
+    #rect(fill: cyan, width: 70%, inset: 8pt, radius: 2pt)[
+      #set align(left)
+      #text(weight: 500, size: 14pt, fill: deepGreen)[#upper(data.metadata.right_header)]
     ]
   ])
 
   for section in data.sections {
     // Left Cell
-    grid-items.push(block(width: 100%, inset: (left: 0.5in, right: 15pt, y: 12pt))[
+    grid-items.push(block(width: 100%, inset: (left: 0.5in, right: 15pt, y: 12pt, bottom: 20pt))[
       #set text(fill: deepGreen)
-      #text(weight: 800, size: 10pt)[#section.left_column.goal] \
+      #set align(center)
+      #text(weight: 800, size: 14pt)[#upper([#section.left_column.goal])] \
       #v(2pt)
       // Add style: "italic" right here:
       #text(size: 8.5pt, style: "italic")[#section.left_column.benefit]
     ])
     
     // Right Cell
-    grid-items.push(block(width: 100%, inset: (left: 15pt, right: 0.5in, y: 15pt))[
-      #set text(fill: cyan, size: 8.5pt)
-      #text(weight: 800, size: 10pt)[#section.right_column.title]
+    grid-items.push(block(width: 100%, inset: (left: 15pt, right: 0.5in, y: 15pt, bottom: 20pt))[
+      #set text(fill: cyan, size: 10pt)
+      #set align(center)
+      #text(weight: 800, size: 14pt)[#upper([#section.right_column.title])]
       #v(2pt)
       #let lines = ()
       #if "standards" in section.right_column { lines.push([*Standards:* #section.right_column.standards.map(format-item).join(", ")]) }
@@ -123,10 +121,21 @@
       #if "taxonomic" in section.right_column { lines.push([*Authorities:* #section.right_column.taxonomic.map(format-item).join(", ")]) }
       #if "habitat" in section.right_column { lines.push([*Habitat:* #section.right_column.habitat.map(format-item).join(", ")]) }
       #lines.join([\ ])
+      // Checklist Items (Inside the right-hand column)
       #if "checklist" in section.right_column {
         v(4pt)
+        // Reset alignment to left for the bullets
+        set align(left) 
+        
         for item in section.right_column.checklist {
-          grid(columns: (10pt, 1fr), [-], [ #format-item(item) ])
+          // Use a tight 2-column grid to "hang" the bullet
+          grid(
+            columns: (12pt, 1fr), 
+            gutter: 0pt,
+            // The bullet in column 1, the text in column 2
+            [-], [#text(size: 10pt)[#format-item(item)]]
+          )
+          v(2pt) // Small gap between bullet items
         }
       }
     ])
@@ -136,38 +145,65 @@
   block(breakable: true)[
     #grid(
       columns: (1fr, 1fr),
-      // Background colors for the columns
+      // CHANGE THIS: Remove the 'if row == 0 { white }' part
       fill: (col, row) => {
-        if row == 0 { white } 
-        else if col == 0 { cyan } 
+        if col == 0 { cyan } 
         else { deepGreen }
       },
-      // Horizontal lines between rows
       stroke: (x, y) => (
         bottom: if y > 0 { 2pt + brightBlue } else { 0pt }
       ),
       ..grid-items
     )
+
+    #v(-10pt)
   ]
 
-  // 7. BOTTOM ZONE
-  rect(width: 100%, fill: brightBlue, inset: (x: 0.5in, y: 20pt), stroke: none)[
+  // --- 7. MIX AND MATCH & REQUIREMENTS (Bottom Checklist) ---
+  v(-1.2pt) // Stitching the seam to the grid above
+  
+  block(width: 100%, fill: brightBlue, inset: (top: 0.25in, bottom: 0.25in, x: 0.5in), stroke: none)[
     #set text(fill: deepGreen)
-    #grid(columns: (1.2fr, 2.2fr), gutter: 20pt,
-      [#text(weight: 900, size: 10pt)[#data.repository_disclaimer.title] \ #v(4pt) #data.repository_disclaimer.text],
+    #grid(
+      columns: (1fr, 1fr),
+      column-gutter: 30pt,
+      // LEFT COLUMN: Disclaimer
       [
-        #text(weight: 900, size: 10pt)[#data.repository_requirements.title]
+        #set align(left)
+        #text(size: 14pt, weight: 800)[#upper(data.repository_disclaimer.title)]
         #v(6pt)
-        #grid(columns: (1fr, 1fr, 1fr, 1fr, 1fr), gutter: 4pt,
-          ..data.repository_requirements.nodes.map(node => rect(width: 100%, fill: white, inset: 4pt, stroke: 0.5pt + deepGreen, radius: 2pt)[
-            #set align(center)
-            #text(weight: 800, size: 7pt)[#node.name] \
-            #v(1pt)
-            #set text(size: 6pt)
-            #node.requirements.join("\n")
-          ])
-        )
+        #text(size: 10pt)[#data.repository_disclaimer.text]
+      ],
+      // RIGHT COLUMN: Requirements
+      [
+        #set align(left)
+        #text(size: 14pt, weight: 800)[#upper(data.repository_requirements.title)]
+        #v(6pt)
+        #set list(indent: 0pt, body-indent: 8pt, marker: sym.square.filled)
+        #for node in data.repository_requirements.nodes [
+          - #text(size: 10pt)[*#node.name:* #node.requirements.join(", ")]
+        ]
       ]
     )
   ]
+
+  v(-1pt) // The "Seam" Nudge to glue the blue to the cyan
+
+  // --- 8. THE INTEGRATED FOOTER (Stacked & Centered) ---
+  v(-15pt) // Tiny nudge to ensure no white line between blue and cyan
+  
+  // 'height: 1fr' expands the block to fill the rest of the page
+  block(width: 100%, height: 1fr, fill: cyan, inset: (x: 0.5in, top: 20pt, bottom: 20pt), stroke: none)[
+    #set align(center)
+    #set text(size: 12pt, fill: deepGreen, font: "Montserrat", weight: 600)
+    
+    #stack(dir: ttb, spacing: 20pt)[
+        To get involved,
+        #v(-10pt) // Tighter gap for the "To get involved" label
+        Visit: #link(data.primer_footer.get_involved) 
+    ][
+        #link(data.primer_footer.fairsharing)
+    ]
+  ]
+
 }

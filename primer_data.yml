@@ -72,7 +72,7 @@ sections:
       goal: "Make your data software ready?"
       benefit: "Ensures your data are easily imported to computing software and analyzed."
     right_column:
-      title: "Technical Requirements"
+      title:
       checklist:
         - "Use non-proprietary formats"
         - "Structure data in tidy/long format"
