@@ -1,0 +1,103 @@
+metadata:
+  main_title: "Biological Observation Data Standardization"
+  subtitle: "A primer for data managers"
+  tagline: "HELP YOURSELF IN THE FUTURE - USE ACCEPTED\nSTANDARDS WHETHER YOU SHARE YOUR DATA OR NOT!"
+  core_message: "USING STANDARDS FOR YOUR BIOLOGICAL OBSERVATION DATA MEANS WE CAN UNDERSTAND\nPATTERNS AT SCALES GREATER THAN ONE PROJECT, RESEARCH GROUP, OR ORGANIZATION"
+  left_header: "Do you want to..."
+  right_header: "Then use..."
+
+sections:
+  - id: context
+    left_column:
+      goal: "Provide context and understandability?"
+      benefit: "Ensures your data are reusable so that yourself and others understand how the data were collected and who to contact for more information. Use metadata standards like EML, ISO-19115, FGDC-CSDGM, or MIxS to describe your dataset."
+    right_column:
+      title: "Metadata Standards"
+      description: "Use these to describe your dataset"
+      standards: 
+        - text: "EML"
+          url: "https://eml.ecoinformatics.org/"
+        - text: "ISO-19115"
+          url: "https://www.iso.org/standard/53798.html"
+        - text: "FGDC-CSDGM"
+          url: "https://www.fgdc.gov/metadata/csdgm-standard"
+        - text: "MIxS"
+          url: "https://gensc.org/mixs/"
+      repositories: ["EDI", "DataONE", "NCEI", "Data.gov", "Science Base", "NASA DAACs", "Planet Microbe"]
+
+  - id: integrate
+    left_column:
+      goal: "Integrate your data with other data?"
+      benefit: "Ensures your data can be combined with other data and benefits from community developed tools. Use data standards like Darwin Core or Climate and Forecast (CF) conventions to format the data within your file."
+    right_column:
+      title: "Data Standards"
+      description: "Use these to format the data within your file"
+      standards: 
+        - text: "Darwin Core"
+          url: "https://dwc.tdwg.org/"
+        - text: "Climate and Forecast (CF)"
+          url: "https://cfconventions.org/"
+      repositories: ["GBIF", "IOOS", "OBIS"]
+
+  - id: interoperable
+    left_column:
+      goal: "Make your data interoperable?"
+      benefit: "Ensures your data can be used and understood in the context of other data and makes the data easier to reuse, especially for machine-to-machine operations. Use controlled vocabularies and taxonomic and habitat authorities to identify parameters, taxa, and locations."
+    right_column:
+      title: "Controlled Vocabularies & Authorities"
+      vocabularies: 
+        - text: "ENVO"
+          url: "https://environmentontology.org/"
+        - text: "NERC"
+          url: "https://vocab.nerc.ac.uk/"
+      taxonomic: 
+        - text: "CoL"
+          url: "https://www.catalogueoflife.org/"
+        - text: "ITIS"
+          url: "https://www.itis.gov/"
+        - text: "PBDB"
+          url: "https://paleobiodb.org/"
+        - text: "WoRMS"
+          url: "https://www.marinespecies.org/"
+      habitat: 
+        - text: "CMECS"
+          url: "https://www.cmecscatalog.org/"
+        - text: "NVCS"
+          url: "https://vegbank.org/vegbank/index.jsp"
+        - text: "NWCS"
+          url: "https://www.fws.gov/program/national-wetlands-inventory/classification-wetlands-and-deepwater-habitats"
+
+  - id: software
+    left_column:
+      goal: "Make your data software ready?"
+      benefit: "Ensures your data are easily imported to computing software and analyzed."
+    right_column:
+      title: "Technical Requirements"
+      checklist:
+        - "Use non-proprietary formats"
+        - "Structure data in tidy/long format"
+        - "Follow ISO 8601 for dates"
+        - "Record lat/lon in decimal degrees (WGS84)"
+        - "Use globally unique identifiers"
+
+repository_disclaimer:
+  title: "MIX AND MATCH BUT WATCH OUT FOR REQUIREMENTS!"
+  text: "You can use metadata standards, data standards, and controlled vocabularies in any combination with each other. Some places may require certain combinations for your data to be included in their repository. Using standards will result in data that are more closely aligned to the FAIR principles."
+
+repository_requirements:
+  title: "REQUIRED STANDARDS FOR SOME EXAMPLE REPOSITORIES"
+  nodes:
+    - name: "EDI"
+      requirements: ["EML"]
+    - name: "OBIS"
+      requirements: ["Darwin Core, EML, and WoRMS,", "NERC recommended"]
+    - name: "GBIF"
+      requirements: ["Darwin Core and EML"]
+    - name: "NCEI"
+      requirements: ["ISO"]
+    - name: "Planet Microbe"
+      requirements: ["MIxS and ENVO"]
+
+primer_footer:
+  get_involved: "https://wiki.esipfed.org/Biological_Data_Standards_Cluster"
+  fairsharing: "https://fairsharing.org/standards/?q=biological"

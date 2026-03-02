@@ -1,0 +1,6 @@
+typography:
+  fonts:
+    - family: Montserrat
+      source: google
+    - family: Open Sans
+      source: google
